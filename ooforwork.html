@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style media="screen">
+      .teacher{
+        width:300px;
+        left:100px;
+        display: inline;
+      }
+      .student{
+        display: inline;
+        float: right;
+        right: 10px;
+      }
+      .white_content {
+        display: none;
+        position: absolute;
+        top: 25%;  left: 25%;
+        width: 50%;  height: 10%;
+        padding: 16px;
+        border: 16px solid orange;
+        background-color: white;
+        z-index:1002;
+        overflow: auto;
+        text-align: center;
+
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <div class="teacher">
+      <span class="teachername">...</span>
+      <button type="button" name="onclass">上课</button>
+      <button type="button" name="offclass">下课</button>
+    </div>
+    <div class="student">
+      <span class="studentname">...</span>
+      <button type="button" class="speak">说话</button>
+      <button type="button" class="selectclass">选课</button>
+
+    </div> -->
+  </body>
+  <script type="text/javascript">
+
+    function person(name){
+      var o = {
+        name:name,
+      }
+
+      o.setname = function(name) {
+        this.name = name
+      }
+      return o
+    }
+    function teacher(name){
+      var o = person(name)
+      //上课按钮操作
+      o.studentList = new Array()
+
+        //下课按钮操作
+      o.finishClass = function(students) {
+        for(var len in teachers){
+          if(students[len].selectedteacher == this.name){
+              students[len].getElementsByClassName('selectclass').setAttribute('disabled',false)
+              students[len].getElementsByClassName('speak').setAttribute('disabled',false)
+          }
+        }
+      }
+      o.createTeacherNode = function() {
+        var div = document.createElement("div")
+        var divattr = document.createAttribute("class")
+        divattr.value = "teacher";
+        div.setAttributeNode(divattr);
+        var divattr1 = document.createAttribute("id")
+        divattr1.value = name
+        div.setAttributeNode(divattr1)
+        //创建姓名
+        var span = document.createElement("span")
+        var spanattr = document.createAttribute("class")
+        spanattr.value = "teachername"
+        span.setAttributeNode(spanattr)
+        span.innerHTML = this.name
+        //创建上课按钮
+        var button = document.createElement("button")
+        var buttonattr = document.createAttribute("type")
+        var buttonattr1 = document.createAttribute("onclick")
+        buttonattr1.value = "attendClass(this)"
+        buttonattr.value = "button"
+        button.innerHTML = "上课"
+        var buttonattr2 = document.createAttribute("name")
+        buttonattr2.value = this.name
+        button.setAttributeNode(buttonattr)
+        button.setAttributeNode(buttonattr1)
+        button.setAttributeNode(buttonattr2)
+          //创建下课按钮
+        var button1 = document.createElement("button")
+        var button1attr = document.createAttribute("type")
+        button1attr.value = "button"
+        var button1attr1 = document.createAttribute("name")
+        button1attr.value = "button"
+        var button1attr2 = document.createAttribute("onclick")
+        button1attr1.value = this.name
+        button1attr2.value = "offClass(this)"
+        button1.innerHTML = "下课"
+        button1.setAttributeNode(button1attr)
+        button1.setAttributeNode(button1attr1)
+        button1.setAttributeNode(button1attr2)
+        //将结点加入div
+        div.appendChild(span)
+        div.appendChild(button)
+        div.appendChild(button1)
+        //把div追加到body
+        document.getElementsByTagName("body").item(0).appendChild(div);
+      }
+      return o
+    }
+    function student(name){
+      var o = person(name)
+      o.selectedteacher = ""
+      o.selectclass = function(name){
+          this.selectedteacher.push(name)
+      }
+      //选课点击弹出div来选择
+      o.createStudentNode = function() {
+        var div = document.createElement("div")
+        var divattr = document.createAttribute("class")
+        divattr.value = "student"
+        var divattr1 = document.createAttribute("id")
+        divattr1.value = name
+        div.setAttributeNode(divattr)
+        div.setAttributeNode(divattr1);
+        //创建姓名
+        var span = document.createElement("span")
+        var spanattr = document.createAttribute("class")
+        spanattr.value = "studentname"
+        span.setAttributeNode(spanattr)
+        span.innerHTML = this.name
+        //创建说话按钮
+        var button = document.createElement("button")
+        var buttonattr = document.createAttribute("type")
+        buttonattr.value = "button"
+        button.innerHTML = "说话"
+        var buttonattr1 = document.createAttribute("class")
+        buttonattr1.value = "speak"
+        button.setAttributeNode(buttonattr)
+        button.setAttributeNode(buttonattr1)
+        //创建选课按钮
+        var button1 = document.createElement("button")
+        var button1attr = document.createAttribute("class")
+        button1attr.value = "button"
+        var button1attr1 = document.createAttribute("onclick")
+        button1attr1.value = "select(this.parentNode)"
+        button1attr.value = "selectclass"
+        button1.innerHTML = "选课"
+        button1.setAttributeNode(button1attr)
+        button1.setAttributeNode(button1attr1)
+        //创建
+        //将结点加入div
+        div.appendChild(span)
+        div.appendChild(button)
+        div.appendChild(button1)
+        //把div追加到body
+        document.getElementsByTagName("body").item(0).appendChild(div);
+      }
+      return o
+    }
+    var teachers = new Array()
+    var students = new Array()
+    //createwindow
+      for (var i = 0; i < 9; i++) {
+        teachers[i] = teacher("教师"+(i+1))
+        teachers[i].createTeacherNode()
+        var br = document.createElement("br")
+        students[i] = student("学生"+(i+1))
+        students[i].createStudentNode()
+        document.getElementsByTagName("body").item(0).appendChild(br);
+      }
+
+    function select(student){
+      //alert(student.id)
+     var teachers = document.getElementsByClassName('teacher')
+     var div = document.createElement("div")
+     var divattr = document.createAttribute("class")
+     var divattr1 = document.createAttribute("style")
+     var divattr2 = document.createAttribute("id")
+     divattr2.value = student.id
+     divattr.value = "white_content"
+     divattr1.value = "display:block;"
+     div.innerHTML = student.id
+     div.setAttributeNode(divattr)
+     div.setAttributeNode(divattr1)
+     div.setAttributeNode(divattr2)
+     var select = document.createElement("select")
+     var selectattr = document.createAttribute("id")
+     selectattr.value = name
+     //创建下拉列表
+     for (len=0;len<teachers.length;len++){
+         var option = document.createElement("option")
+         var optionattr = document.createAttribute("value")
+         optionattr.value = teachers[len].id
+         option.setAttributeNode(optionattr)
+         option.innerHTML = teachers[len].id
+         select.appendChild(option)
+     }
+     //创建提交按钮
+     var button = document.createElement("button")
+     button.innerHTML = "提交"
+     var buttonattr = document.createAttribute("class")
+     buttonattr.value = "selectclasssubmit"
+     var buttonattr1 = document.createAttribute("onclick")
+     buttonattr1.value = "submitTeacher(this)"
+     button.setAttributeNode(buttonattr)
+     button.setAttributeNode(buttonattr1)
+     div.appendChild(select)
+     div.appendChild(button)
+     document.getElementsByTagName("body").item(0).appendChild(div);
+     //alert(students.name)
+     // <select id="test">
+     //   <option value="1">option-1</option>
+     //   <option value="2">option-2</option>
+     //   <option value="3">option-3</option>
+     // </select>
+   //绑定事件
+      //绑定提交事件
+     }
+    function submitTeacher(node){
+     var submit = document.getElementsByClassName('selectclasssubmit')[0]
+     //选课加入学生所选的老师
+     for(len in students){
+       if(students[len].name==node.parentNode.id){
+         students[len].selectedteacher = node.parentNode.childNodes[1].value
+         //alert(students[len].selectedteacher+"a")
+       }
+     }
+      for(len in teachers){
+        if(teachers[len].name==node.parentNode.childNodes[1].value){
+          teachers[len].studentList.push(node.parentNode.id)
+          //alert(node.parentNode.id+"b")
+        }
+      }
+       document.getElementsByTagName('body').item(0).removeChild(node.parentNode)
+    }
+    function attendClass(node){
+      for(len in students){
+        if(students[len].selectedteacher == node.parentNode.id){
+            //alert(document.getElementById(students[len].name).childNodes[1])
+            document.getElementById(students[len].name).childNodes[1].setAttribute('disabled',true)
+            document.getElementById(students[len].name).childNodes[1].setAttribute('style',"color:blue")
+            document.getElementById(students[len].name).childNodes[2].setAttribute('disabled',true)
+            document.getElementById(students[len].name).childNodes[2].setAttribute('style',"color:blue")
+        }
+      }
+    }
+    function offClass(node){
+      for(len in students){
+        if(students[len].selectedteacher == node.parentNode.id){
+            //alert(document.getElementById(students[len].name).childNodes[1])
+            document.getElementById(students[len].name).childNodes[1].removeAttribute('disabled')
+            document.getElementById(students[len].name).childNodes[1].removeAttribute('style',"color:blue")
+            document.getElementById(students[len].name).childNodes[2].removeAttribute('disabled')
+            document.getElementById(students[len].name).childNodes[2].removeAttribute('style',"color:blue")
+        }
+      }
+    }
+
+    //创建老师和学生
+
+      // var teacher1 = teacher()
+      //
+      // var student1 = student("学生1")
+      // student1.createStudentNode()
+
+  </script>
+</html>
